@@ -17,7 +17,7 @@ data <- read.csv(fileName)
 data$date <- as.character(data$date)
 ```
 
-Create a second ata set without the NAs called data_na
+Create a second dataset without the NAs called: data_na
 
 ```r
 data_na <- subset(data, !is.na(data$steps))
@@ -47,8 +47,22 @@ hist(number_of_steps)
 
 What are the mean and median number of steps
 
-'''{R}
-mean(number_of_steps); median(number_of_steps)
+
+```r
+mean(number_of_steps)
+```
+
+```
+## [1] 10766.19
+```
+
+
+```r
+median(number_of_steps)
+```
+
+```
+## [1] 10765
 ```
 Mean and median are fairly close, so it looks like there is not too much skew to the data.
 
@@ -75,35 +89,68 @@ Plot activity per time interval
 plot(interval_result$interval, interval_result$steps, xlab="Time Interval", ylab="Avg Steps", main="Average Steps At Time Of Day", type="l")
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+![plot of chunk daily_activity](figure/daily_activity-1.png) 
 
 ## Imputing missing values
 
 
 ```r
-interval_result <- data.frame()
-interval <- unique(data_na$interval)
+data_impute <- data.frame()
+interval <- unique(data$interval)
 for (i in interval){
-    interval_subset <- subset(data_na, data_na$interval == i)
+    interval_subset <- subset(data, data$interval == i)
     
-    t_avg <- sd(interval_subset$steps)
-    interval_result <- rbind(interval_result, data.frame(interval=i, steps=t_avg))
+    t_mean <- mean(interval_subset$steps, na.rm=TRUE)
+    interval_subset$steps[is.na(interval_subset$steps)] <- t_mean
+    data_impute <- rbind(data_impute, interval_subset)
 }
 ```
+Regraph the histogram for total steps per day using the imputed data
 
 
 ```r
-plot(interval_result$interval, interval_result$steps, xlab="Time Interval", ylab="Avg Steps", main="Std Steps At Time Of Day", type="l")
+number_of_steps <-numeric()
+days <- unique(data_impute$date)
+for (i in days){
+    day_subset <- subset(data_impute, data_impute$date == i)
+    
+    t_sum <- sum(day_subset$steps)
+    number_of_steps <- c(number_of_steps, t_sum)
+}
+```
+Graph the distribution of steps per day
+
+```r
+hist(number_of_steps)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+![plot of chunk histogram_steps_per_day_impute](figure/histogram_steps_per_day_impute-1.png) 
 
-## Are there differences in activity patterns between weekdays and weekends?
+Now let's see how the mean and median have changed after adding the imputed steps per day
 
-We need to create a new factor of weekday or weekend from day of week
 
 ```r
-day_type <- as.Date(data_na$date)
+mean(number_of_steps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
+median(number_of_steps)
+```
+
+```
+## [1] 10766.19
+```
+## Are there differences in activity patterns between weekdays and weekends?
+
+To answer this question, we need to create another factor which is either Weekday or Weekend, and apply it to the the data with imputed step values.  This will be a new column called: day_type
+
+
+```r
+day_type <- as.Date(data_impute$date)
 day_type <- weekdays(day_type)
 day_type <- gsub("Monday", "Weekday", day_type)
 day_type <- gsub("Tuesday", "Weekday", day_type)
@@ -113,9 +160,9 @@ day_type <- gsub("Friday", "Weekday", day_type)
 day_type <- gsub("Saturday", "Weekend", day_type)
 day_type <- gsub("Sunday", "Weekend", day_type)
 
-data_days <- cbind(data_na, day_type)
+data_days <- cbind(data_impute, day_type)
 ```
-Compute the average 
+Compute the average across day_type
 
 
 ```r
@@ -134,13 +181,13 @@ for (k in days){
 }
 ```
 
-For this graph, we need to load teh gplot2 library
+For this graph, we need to load the gplot2 library
 
 ```r
 library(ggplot2)
 ```
 
-And plot the results
+And plot the Weekday and Weekend results side by side (since it is easier to read than up and down)
 
 
 ```r
@@ -149,3 +196,4 @@ print(g)
 ```
 
 ![plot of chunk Weekday_vs_Weekend](figure/Weekday_vs_Weekend-1.png) 
+
