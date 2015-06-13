@@ -10,21 +10,24 @@ output:
 This routine assumes the activity.csv data file is in the data/ subdirectory.
 
 Read in the data set and modify the dates to character strings
-```{R}
+
+```r
 fileName = "data/activity.csv"
 data <- read.csv(fileName)
 data$date <- as.character(data$date)
 ```
 
 Create a second ata set without the NAs called data_na
-```{R}
+
+```r
 data_na <- subset(data, !is.na(data$steps))
 ```
 
 ## What is mean total number of steps taken per day?
 
 Create a data set, number_of_steps, which is the total number of steps per day
-```{R}
+
+```r
 number_of_steps <-numeric()
 days <- unique(data_na$date)
 for (i in days){
@@ -35,9 +38,12 @@ for (i in days){
 }
 ```
 Graph the distribution of steps per day
-```{R histogram_steps_per_day}
+
+```r
 hist(number_of_steps)
 ```
+
+![plot of chunk histogram_steps_per_day](figure/histogram_steps_per_day-1.png) 
 
 What are the mean and median number of steps
 
@@ -51,7 +57,8 @@ Mean and median are fairly close, so it looks like there is not too much skew to
 
 Create a dataset, interval_result, which is the average steps per time interval
 
-```{R}
+
+```r
 interval_result <- data.frame()
 interval <- unique(data_na$interval)
 for (i in interval){
@@ -63,13 +70,17 @@ for (i in interval){
 ```
 Plot activity per time interval
 
-```{R}
+
+```r
 plot(interval_result$interval, interval_result$steps, xlab="Time Interval", ylab="Avg Steps", main="Average Steps At Time Of Day", type="l")
 ```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+
 ## Imputing missing values
 
-```{R}
+
+```r
 interval_result <- data.frame()
 interval <- unique(data_na$interval)
 for (i in interval){
@@ -80,14 +91,18 @@ for (i in interval){
 }
 ```
 
-```{R}
+
+```r
 plot(interval_result$interval, interval_result$steps, xlab="Time Interval", ylab="Avg Steps", main="Std Steps At Time Of Day", type="l")
 ```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 We need to create a new factor of weekday or weekend from day of week
-```{R}
+
+```r
 day_type <- as.Date(data_na$date)
 day_type <- weekdays(day_type)
 day_type <- gsub("Monday", "Weekday", day_type)
@@ -99,11 +114,11 @@ day_type <- gsub("Saturday", "Weekend", day_type)
 day_type <- gsub("Sunday", "Weekend", day_type)
 
 data_days <- cbind(data_na, day_type)
-
 ```
 Compute the average 
 
-```{R}
+
+```r
 interval_result <- data.frame()
 interval <- unique(data_days$interval)
 days <- unique(data_days$day_type)
@@ -120,13 +135,17 @@ for (k in days){
 ```
 
 For this graph, we need to load teh gplot2 library
-```{R}
+
+```r
 library(ggplot2)
 ```
 
 And plot the results
 
-```{R Weekday_vs_Weekend}
+
+```r
 g<-ggplot(interval_result, aes(interval, steps)) + geom_line() + facet_grid(.~day) + labs(title="Weekday vs Weekend Activity")
 print(g)
 ```
+
+![plot of chunk Weekday_vs_Weekend](figure/Weekday_vs_Weekend-1.png) 
