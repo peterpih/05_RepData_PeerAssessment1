@@ -30,7 +30,7 @@ data_na <- subset(data, !is.na(data$steps))
 
 ## What is mean total number of steps taken per day?
 
-Create a data set: number_of_steps, which is the total number of steps per day
+Create a data set: **number_of_steps**, which is the total number of steps per day
 
 ```r
 number_of_steps <-numeric()
@@ -52,7 +52,7 @@ hist(number_of_steps, main="Histogram of Number of Steps without NAs", xlab="Num
 
 ![plot of chunk histogram_steps_per_day](figure/histogram_steps_per_day-1.png) 
 
-What are the mean and median number of steps?
+What are the **mean** and **median** number of steps per day?
 
 
 ```r
@@ -147,9 +147,9 @@ hist(number_of_steps, main="Histogram of Number Of Steps Taken After Adding Impu
 
 ![plot of chunk histogram_steps_per_day_impute](figure/histogram_steps_per_day_impute-1.png) 
 
-The shaoe of the histogram has not changed and some of the frequency observations have increased since there are more of them. However, we would not expect a change in the overall mean since it was the value used to impute the NAs.
+The shape of the histogram has not changed and some of the frequency observations have increased since there are more of them. However, we would not expect a change in the overall mean since it was the value used to impute the NAs.
 
-Now let's see how the mean and median have changed after adding the imputed steps per day
+Now let's see how the **mean** and **median** have changed after adding the imputed steps per day
 
 
 ```r
