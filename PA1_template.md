@@ -40,7 +40,7 @@ for (i in days){
 Graph the distribution of steps per day
 
 ```r
-hist(number_of_steps)
+hist(number_of_steps, main="Histogram of Number of Steps without NAs", xlab="Number of Steps")
 ```
 
 ![plot of chunk histogram_steps_per_day](figure/histogram_steps_per_day-1.png) 
@@ -69,7 +69,7 @@ Mean and median are fairly close, so it looks like there is not too much skew to
 
 ## What is the average daily activity pattern?
 
-Create a dataset, interval_result, which is the average steps per time interval
+Create a dataset: interval_result, which is the average steps per time interval. Measurements are recorded at 5 mint intervals throughout the day.
 
 
 ```r
@@ -91,7 +91,20 @@ plot(interval_result$interval, interval_result$steps, xlab="Time Interval", ylab
 
 ![plot of chunk daily_activity](figure/daily_activity-1.png) 
 
+Which interval has the **maximum average activity**?
+
+
+```r
+interval_result$interval[which(interval_result$steps == max(interval_result$steps), arr.ind=TRUE)]
+```
+
+```
+## [1] 835
+```
+
 ## Imputing missing values
+
+Some of the observations have missing data. To fill in the data, we will use the average for the time interval, a simple, but fast, calculation.  A possible enhancement might be the average for the time interval according to the type of day (the significance of type of day will be shown later).
 
 
 ```r
@@ -105,7 +118,7 @@ for (i in interval){
     data_impute <- rbind(data_impute, interval_subset)
 }
 ```
-Regraph the histogram for total steps per day using the imputed data
+Regraph the histogram for total steps per day including the imputed data
 
 
 ```r
@@ -118,13 +131,16 @@ for (i in days){
     number_of_steps <- c(number_of_steps, t_sum)
 }
 ```
-Graph the distribution of steps per day
+Graph the distribution of steps per day to see if it has changed
+
 
 ```r
-hist(number_of_steps)
+hist(number_of_steps, main="Histogram of Number Of Steps Taken After Adding Imputed Data", xlab="Number of Steps")
 ```
 
 ![plot of chunk histogram_steps_per_day_impute](figure/histogram_steps_per_day_impute-1.png) 
+
+The shaoe of the histogram has not changed and some of the frequency observations have increased since there are more of them. However, we would not expect a change in the overall mean since it was the value used to impute the NAs.
 
 Now let's see how the mean and median have changed after adding the imputed steps per day
 
@@ -144,6 +160,10 @@ median(number_of_steps)
 ```
 ## [1] 10766.19
 ```
+
+The median has moved closer to the mean.
+
+
 ## Are there differences in activity patterns between weekdays and weekends?
 
 To answer this question, we need to create another factor which is either Weekday or Weekend, and apply it to the the data with imputed step values.  This will be a new column called: day_type
@@ -181,7 +201,7 @@ for (k in days){
 }
 ```
 
-For this graph, we need to load the gplot2 library
+For this graph, we need to load the ggplot2 library
 
 ```r
 library(ggplot2)
@@ -191,7 +211,10 @@ And plot the Weekday and Weekend results side by side (since it is easier to rea
 
 
 ```r
-g<-ggplot(interval_result, aes(interval, steps)) + geom_line() + facet_grid(.~day) + labs(title="Weekday vs Weekend Activity")
+g<-ggplot(interval_result, aes(interval, steps)) + 
+      geom_line() + 
+      facet_grid(.~day) + 
+      labs(title="Weekday vs Weekend Activity")
 print(g)
 ```
 
