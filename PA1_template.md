@@ -17,7 +17,12 @@ data <- read.csv(fileName)
 data$date <- as.character(data$date)
 ```
 
-Create a second dataset without the NAs called: data_na
+The data set has 17,568 rows with three fields:
+- **steps**, the number of steps during the time interval
+- **date**, the date of the observations
+- **interval**, the 5 mins time interval
+
+Create a second dataset without the NAs called: **data_na**
 
 ```r
 data_na <- subset(data, !is.na(data$steps))
@@ -25,7 +30,7 @@ data_na <- subset(data, !is.na(data$steps))
 
 ## What is mean total number of steps taken per day?
 
-Create a data set, number_of_steps, which is the total number of steps per day
+Create a data set: number_of_steps, which is the total number of steps per day
 
 ```r
 number_of_steps <-numeric()
@@ -37,7 +42,9 @@ for (i in days){
     number_of_steps <- c(number_of_steps, t_sum)
 }
 ```
+
 Graph the distribution of steps per day
+
 
 ```r
 hist(number_of_steps, main="Histogram of Number of Steps without NAs", xlab="Number of Steps")
@@ -45,7 +52,7 @@ hist(number_of_steps, main="Histogram of Number of Steps without NAs", xlab="Num
 
 ![plot of chunk histogram_steps_per_day](figure/histogram_steps_per_day-1.png) 
 
-What are the mean and median number of steps
+What are the mean and median number of steps?
 
 
 ```r
@@ -104,7 +111,7 @@ interval_result$interval[which(interval_result$steps == max(interval_result$step
 
 ## Imputing missing values
 
-Some of the observations have missing data. To fill in the data, we will use the average for the time interval, a simple, but fast, calculation.  A possible enhancement might be the average for the time interval according to the type of day (the significance of type of day will be shown later).
+Some of the observations have missing data. To fill in the data, we will use the average for the time interval, a simple, but fast, calculation.  A possible enhancement might be the average for the time interval according to the type of day (the significance of type of day will be shown later). The new dataset: **data_impute**, will have the same dimensions as the original dataset, 17568 rows.
 
 
 ```r
@@ -166,7 +173,7 @@ The median has moved closer to the mean.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-To answer this question, we need to create another factor which is either Weekday or Weekend, and apply it to the the data with imputed step values.  This will be a new column called: day_type
+To answer this question, we need to create another factor which is either Weekday or Weekend, and apply it to the the data with imputed step values.  This will be a new column called: **day_type**
 
 
 ```r
@@ -219,4 +226,6 @@ print(g)
 ```
 
 ![plot of chunk Weekday_vs_Weekend](figure/Weekday_vs_Weekend-1.png) 
+
+The graphs show that activity generally starts later in the day on the Weekends, but is more consistent throughout the day and further into the evening than on the Weekdays.
 
